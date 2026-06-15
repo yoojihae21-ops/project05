@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>project04</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .main {
+            position: relative;
+        }
+
+        .main_img,
+        video {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .add3 {
+            position: relative;
+        }
+
+        .center {
+            width: 340px;
+            height: auto;
+            transform: scale(1);
+            z-index: 3;
+            position: absolute;
+            top: 150px;
+            left: 557px;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all .4s ease;
+            filter: brightness(100%);
+            opacity: 1;
+            box-shadow: 0 20px 40px rgba(0,0,0,.25);
+        }
+
+        .left {
+            width: 320px;
+            height: auto;
+            transform: translateX(-180px) scale(0.85);
+            z-index: 1;
+            position: absolute;
+            top: 165px;
+            left: 530px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .right {
+            width: 320px;
+            height: auto;
+            transform: translateX(180px) scale(0.85);
+            z-index: 1;
+            position: absolute;
+            top: 165px;
+            left: 605px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .left,
+        .right {
+            cursor: pointer;
+            transition: all .4s ease;
+            filter: brightness(30%);
+            opacity: 0.85;
+            box-shadow: 0 20px 40px rgba(0,0,0,.25);
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <img src="./img/add_01.jpg" alt="" class="main_img">
+        <video autoplay muted loop playsinline>
+            <source src="./img/add_02.mp4" type="video/mp4">
+        </video>
+        <div class="add3">
+            <div class="center">
+                <video autoplay muted loop playsinline>
+                    <source src="./img/ad_01.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            <div class="left">
+                <video autoplay muted loop playsinline>
+                    <source src="./img/ad_02.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            <div class="right">
+                <video autoplay muted loop playsinline>
+                    <source src="./img/ad_03.mp4" type="video/mp4">
+                </video>
+            </div>
+            <img src="./img/add_03.jpg" alt="" class="main_img">
+        </div>
+    </div>
+
+    <script>
+        if (window.innerWidth > 768) {
+            // 900px 스크롤 적용
+            let isScrolling = false;
+
+            window.addEventListener('wheel', (e) => {
+                e.preventDefault();
+
+                if (isScrolling) return;
+                isScrolling = true;
+
+                const move = e.deltaY > 0 ? 900 : -900;
+
+                window.scrollBy({
+                    top: move,
+                    behavior: 'smooth'
+                });
+
+                setTimeout(() => {
+                    isScrolling = false;
+                }, 500);
+            }, { passive: false });
+        }
+
+        const cards = [
+            document.querySelector('.left'),
+            document.querySelector('.center'),
+            document.querySelector('.right')
+        ];
+
+        function updateCarousel() {
+
+            cards.forEach(card => {
+                card.classList.remove('left', 'center', 'right');
+            });
+
+            cards[0].classList.add('left');
+            cards[1].classList.add('center');
+            cards[2].classList.add('right');
+
+            document.querySelectorAll('.add3 video').forEach(video => {
+                video.pause();
+                video.currentTime = 0;
+            });
+
+            const centerVideo = cards[1].querySelector('video');
+
+            centerVideo.play().catch(() => { });
+        }
+
+        function moveRight() {
+            cards.push(cards.shift());
+            updateCarousel();
+        }
+
+        function moveLeft() {
+            cards.unshift(cards.pop());
+            updateCarousel();
+        }
+
+        cards.forEach(card => {
+
+            card.addEventListener('click', () => {
+
+                if (card.classList.contains('left')) {
+                    moveLeft();
+                }
+
+                if (card.classList.contains('right')) {
+                    moveRight();
+                }
+
+            });
+
+        });
+
+        updateCarousel();
+    </script>
+</body>
+
+</html>
