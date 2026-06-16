@@ -216,6 +216,16 @@
 
             if (!container) return;
 
+            container.querySelectorAll('.add3 video').forEach(video => {
+
+                video.addEventListener('click', () => {
+
+                    video.muted = !video.muted;
+
+                });
+
+            });
+
             const cards = [
                 container.querySelector('.left'),
                 container.querySelector('.center'),
