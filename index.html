@@ -39,7 +39,7 @@
             transition: all .4s ease;
             filter: brightness(100%);
             opacity: 1;
-            box-shadow: 0 20px 40px rgba(0,0,0,.25);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
         }
 
         .left {
@@ -72,37 +72,117 @@
             transition: all .4s ease;
             filter: brightness(30%);
             opacity: 0.85;
-            box-shadow: 0 20px 40px rgba(0,0,0,.25);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
         }
 
+        .mo {
+            display: none;
+        }
+
+
+        @media (max-width: 768px) {
+
+            .mo {
+                display: block;
+            }
+
+            .pc {
+                display: none;
+            }
+
+            .add3 {
+                min-height: 350px;
+            }
+
+            .center {
+                width: 170px;
+                top: 28.5%;
+                left: 50%;
+                transform: translateX(-50%) scale(1);
+                z-index: 3;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, .25);
+            }
+
+            .left {
+                width: 160px;
+                top: 29.5%;
+                left: 50%;
+                transform: translateX(-170px) scale(0.85);
+                z-index: 1;
+            }
+
+            .right {
+                width: 160px;
+                top: 29.5%;
+                left: 50%;
+                transform: translateX(7px) scale(0.85);
+                z-index: 1;
+            }
+
+            .left,
+            .right {
+                box-shadow: 0 5px 10px rgba(0, 0, 0, .25);
+            }
+        }
     </style>
 </head>
 
 <body>
-    <div class="main">
-        <img src="./img/add_01.jpg" alt="" class="main_img">
-        <video autoplay muted loop playsinline>
-            <source src="./img/add_02.mp4" type="video/mp4">
-        </video>
-        <div class="add3">
-            <div class="center">
-                <video autoplay muted loop playsinline>
-                    <source src="./img/ad_01.mp4" type="video/mp4">
-                </video>
-            </div>
+    <div class="pc">
+        <div class="main">
+            <img src="./img/add_01.jpg" alt="" class="main_img">
+            <video autoplay muted loop playsinline>
+                <source src="./img/add_02.mp4" type="video/mp4">
+            </video>
+            <div class="add3">
+                <div class="center">
+                    <video autoplay muted loop playsinline>
+                        <source src="./img/ad_01.mp4" type="video/mp4">
+                    </video>
+                </div>
 
-            <div class="left">
-                <video autoplay muted loop playsinline>
-                    <source src="./img/ad_02.mp4" type="video/mp4">
-                </video>
-            </div>
+                <div class="left">
+                    <video autoplay muted loop playsinline>
+                        <source src="./img/ad_02.mp4" type="video/mp4">
+                    </video>
+                </div>
 
-            <div class="right">
-                <video autoplay muted loop playsinline>
-                    <source src="./img/ad_03.mp4" type="video/mp4">
-                </video>
+                <div class="right">
+                    <video autoplay muted loop playsinline>
+                        <source src="./img/ad_03.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <img src="./img/add_03.jpg" alt="" class="main_img">
             </div>
-            <img src="./img/add_03.jpg" alt="" class="main_img">
+        </div>
+    </div>
+
+    <div class="mo">
+        <div class="main">
+            <img src="./img/add_mo_01.jpg" alt="" class="main_img">
+            <video autoplay muted loop playsinline>
+                <source src="./img/add_mo_02.mp4" type="video/mp4">
+            </video>
+            <div class="add3">
+                <div class="center">
+                    <video autoplay muted loop playsinline>
+                        <source src="./img/ad_01.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="left">
+                    <video autoplay muted loop playsinline>
+                        <source src="./img/ad_02.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="right">
+                    <video autoplay muted loop playsinline>
+                        <source src="./img/ad_03.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <img src="./img/add_mo_03.jpg" alt="" class="main_img">
+            </div>
         </div>
     </div>
 
@@ -130,59 +210,75 @@
             }, { passive: false });
         }
 
-        const cards = [
-            document.querySelector('.left'),
-            document.querySelector('.center'),
-            document.querySelector('.right')
-        ];
+        function initCarousel(containerSelector) {
 
-        function updateCarousel() {
+            const container = document.querySelector(containerSelector);
+
+            if (!container) return;
+
+            const cards = [
+                container.querySelector('.left'),
+                container.querySelector('.center'),
+                container.querySelector('.right')
+            ];
+
+            function updateCarousel() {
+
+                cards.forEach(card => {
+                    card.classList.remove('left', 'center', 'right');
+                });
+
+                cards[0].classList.add('left');
+                cards[1].classList.add('center');
+                cards[2].classList.add('right');
+
+                container.querySelectorAll('.add3 video').forEach(video => {
+                    video.pause();
+                    video.currentTime = 0;
+                });
+
+                const centerVideo = cards[1].querySelector('video');
+
+                centerVideo.play().catch(() => { });
+            }
+
+            function moveRight() {
+                cards.push(cards.shift());
+                updateCarousel();
+            }
+
+            function moveLeft() {
+                cards.unshift(cards.pop());
+                updateCarousel();
+            }
 
             cards.forEach(card => {
-                card.classList.remove('left', 'center', 'right');
+
+                card.addEventListener('click', () => {
+
+                    if (card.classList.contains('left')) {
+                        moveLeft();
+                    }
+
+                    if (card.classList.contains('right')) {
+                        moveRight();
+                    }
+
+                });
+
             });
 
-            cards[0].classList.add('left');
-            cards[1].classList.add('center');
-            cards[2].classList.add('right');
-
-            document.querySelectorAll('.add3 video').forEach(video => {
-                video.pause();
-                video.currentTime = 0;
-            });
-
-            const centerVideo = cards[1].querySelector('video');
-
-            centerVideo.play().catch(() => { });
-        }
-
-        function moveRight() {
-            cards.push(cards.shift());
             updateCarousel();
         }
 
-        function moveLeft() {
-            cards.unshift(cards.pop());
-            updateCarousel();
-        }
 
-        cards.forEach(card => {
+        // PC
+        initCarousel('.pc');
 
-            card.addEventListener('click', () => {
+        // 모바일
+        initCarousel('.mo');
 
-                if (card.classList.contains('left')) {
-                    moveLeft();
-                }
 
-                if (card.classList.contains('right')) {
-                    moveRight();
-                }
-
-            });
-
-        });
-
-        updateCarousel();
     </script>
 </body>
 
